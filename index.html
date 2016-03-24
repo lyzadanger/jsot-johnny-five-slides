@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Hardware Hacking with Johnny-Five and Node.js</title>
+
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/night.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>Hardware Hacking with Johnny-Five and Node.js</h1>
+					<h3>March 24, 2016</h3>
+          <p>Lyza Danger Gardner | <a href="https://twitter.com/lyzadanger">@lyzadanger</a></p>
+				</section>
+
+        <section data-markdown>
+          <script type="text/template">
+            ## JavaScript and Hardware Together
+
+            * Host-client method
+            * Embedded JS
+            * Other Methods
+          </script>
+        </section>
+
+        <section data-markdown>
+          <script type="text/template">
+            ## Host-Client Method
+
+            ![](images/01-host-client.png)
+          </script>
+        </section>
+
+        <section data-markdown>
+          <script type="text/template">
+            ## [Johnny-Five](http://johnny-five.io) and Arduino
+
+            Today, we are going to set up a _host-client_ configuration using Arduino Uno development boards, _firmata_ firmware and the Johnny-Five Node.js framework.
+
+            ![](https://github.com/rwaldron/johnny-five/raw/master/assets/sgier-johnny-five.png)
+          </script>
+        </section>
+
+        <section>
+          <!-- Begin nested section -->
+
+          <section data-markdown>
+            <script type="text/template">
+              ## Arduino...It's Everything You Want to Be
+
+              Arduino. It's a company. It's a project. It's hardware. It's a user community.  Arduino is, well, it's _Arduino_, a broad concept combining open-source hardware and software with the goal of making it easy (and inexpensive) for beginners to build interactive devices.
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ## Arduino Uno
+
+              <img src="images/02-arduino-uno-photo.jpg" alt="Arduino Uno" class="image-floatLeftHalf" />
+
+              * Most popular Arduino board
+              * Great for beginners
+              * Widely tested and used
+
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ## Arduino Uno Parts
+              <img src="images/02-arduino-uno-parts.png" alt="Arduino Uno Parts" class="image-floatLeftHalf" />
+              1. Atmel ATmega328P MCU
+              2. USB-B connector
+              3. Digital pins
+              4. Power pins
+              5. Analog input pins
+              6. DC barrel jack
+              7. On LED
+              8. Reset button
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ## Arduino Workflow
+
+              1. Write code in the Arduino IDE using the Arduino programming language
+              2. Compile and upload (flash) sketch to board
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ## Hello, World LED with Arduino
+
+              ```C
+              void setup() {
+                pinMode(13, OUTPUT);
+              }
+              void loop() {
+                digitalWrite(13, HIGH);
+                delay(500);
+                digitalWrite(13, LOW);
+                delay(500);
+              }
+              ```
+              _Example Arduino sketch_
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              Once uploaded, Arduino sketch resides in microcontroller's nonvolatile _program memory_.
+              ![](images/02-arduino-ide-window.png)
+              _Sketch window in Arduino IDE_
+            </script>
+          </section>
+
+          <!-- END NESTED SECTION -->
+
+        </section>
+
+        <section>
+
+          <!-- BEGIN NESTED SECTION -->
+          <section data-markdown>
+            <script type="text/template">
+              ## Host-Client Configuration
+
+              1. Upload [_firmata_](https://github.com/firmata/arduino) firmware to microcontroller
+              2. Install [Johnny-Five](http://johnny-five.io) framework
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ![](images/01-host-client-1.png)
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ![](images/01-host-client-2.png)
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ![](images/01-host-client-3.png)
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ![](images/01-host-client-conversation.png)
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ## Host-Client Method
+
+              * Host must continuously execute code and communicate
+              * Client cannot run independently
+              * Logic does not reside in firmware
+
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ## Firmata
+
+              * Firmata _protocol_
+              * Arduino firmata _implementation_
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ## Uploading Firmata Sketch
+
+              <img src="images/02-firmata-upload.png" class="image-floatLeftHalf" />
+
+              1. Open Arduino IDE
+              2. Connect the Uno with USB
+              3. In the `File -> Examples` menu, find the `Firmata` submenu and select `StandardFirmata`
+              4. Upload the `StandardFirmata` sketch to the Arduino
+
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ## Installing Johnny-Five
+
+              Johnny-Five is a Node.js firmata-based framework for controlling hardware platforms using a host-client configuration.
+
+              ```
+              mkdir playtime
+              cd playtime
+              npm install johnny-five
+              ```
+            </script>
+          </section>
+
+          <!-- END NESTED SECTION -->
+
+        </section>
+
+        <section>
+
+          <!-- BEGIN NESTED SECTION -->
+          <section data-markdown>
+            <script type="text/template">
+              ## "Hello, World" with Johnny-Five
+
+              No entry into hardware hackery is complete without the "Hello, World" blinking LED.
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+```javascript
+const five = require('johnny-five');
+const board = new five.Board();
+
+board.on('ready', () => {
+  const led = new five.Led(13);
+  led.blink(500);
+});
+```
+hello.js
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ## Arduino Lifecycle vs. Johnny-Five Lifecycle
+
+              * Arduino `loop` vs. Johnny Five `Board.on('ready',...)`
+              * Johnny-Five event-driven
+              * `blink` uses `setInterval` under the covers
+              * How can we interact with an LED?
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+## Adapting Hello, World
+
+```javascript
+const five = require('johnny-five');
+const board = new five.Board();
+
+board.on('ready', () => {
+  const led = new five.Led(13);
+  var blinkCount = 0;
+  const blinkMax = 10;
+
+  led.blink(500, () => {
+    blinkCount++;
+    console.log(`I have changed state ${blinkCount} times`);
+    if (blinkCount >= blinkMax) {
+      console.log('I shall stop blinking now');
+      led.stop();
+    }
+  });
+});
+```
+            </script>
+          </section>
+
+          <!-- END NESTED SECTION -->
+
+        </section>
+
+        <section>
+
+          <!-- BEGIN NESTED SECTION -->
+          <section data-markdown>
+            <script type="text/template">
+              ## Johnny-Five Classes and the Node Ecosystem
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ## [Led Methods](http://johnny-five.io/api/led/)
+
+              * `on`, `off`
+              * `blink` (a.k.a. `strobe`)
+              * `toggle`
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ## Led Methods Requiring PWM
+
+              * `brightness`
+              * `fade`, `fadeIn`, `fadeOut`
+              * `pulse`
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ## RGB LEDs
+
+              * Johnny-Five has an [`Led.RGB`](http://johnny-five.io/api/led.rgb/) class
+              * `Led.color` takes colors in HEX and object format
+              * Integrating third-party node module `website-color-extractor` for fun
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ![](images/fritzing-rgb.png)
+
+              _Common-cathode RGB LED_
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+            ### RGB Example
+```javascript
+const five           = require('johnny-five');
+const webColors      = require('website-color-extractor');
+const board          = new five.Board();
+
+const COLOR_DURATION = 2000;
+const WEBSITE        = 'https://www.npmjs.com';
+
+function cycleColors (led, colors, index) { }
+
+board.on('ready', function () {
+  const colorLED = new five.Led.RGB([6, 5, 3]);
+  // Get most frequesntly-used colors on WEBSITE
+  // Set the LED to cycle through those colors
+});
+
+```
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+            ### RGB Example, cont.
+```javascript
+board.on('ready', function () {
+  const colorLED = new five.Led.RGB([6, 5, 3]);
+  webColors.frequent({
+    amount: 20,
+    pages : [ [WEBSITE, ['1024x768'], { crop: true }] ]
+  }, (err, colors) => {
+    // Throw out greys because boring
+    const mainColors = colors[0].filter(color => {
+      return (!(color.r === color.g && color.g === color.b));
+    });
+    cycleColors(colorLED, mainColors);
+  });
+});
+
+```
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+            ### RGB Example, cont.
+```javascript
+function cycleColors (led, colors, index) {
+  if (!index || index >= colors.length) { index = 0; }
+  console.log('changing colors', colors[index]);
+  // Led.color takes colors as HEX or RGB objects
+  led.color([colors[index].r, colors[index].g, colors[index].b]);
+  setTimeout(() => {
+    cycleColors(led, colors, index += 1);
+  }, COLOR_DURATION);
+}
+```
+            </script>
+          </section>
+          <!-- END NESTED SECTION -->
+
+        </section>
+
+        <section>
+
+          <!-- BEGIN NESTED SECTION -->
+          <section data-markdown>
+            <script type="text/template">
+              ## Sensors and Johnny-Five
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ## Analog Sensor: Photoresistor
+
+              * [`Sensor`](http://johnny-five.io/api/sensor/) class
+              * Scaling
+              * Events
+              * Making output from input
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ### Analog Sensor Examples
+              ![](images/fritzing-sensors.png)
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ## Analog Sensor: Proximity Sensor
+
+              * Specific [`Proxmity`](http://johnny-five.io/api/proximity/) class
+              * `GP2Y0A41SK0F` infrared proximity sensor
+              * Measuring proximity distance
+              * Making output from input
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+```javascript
+const five = require('johnny-five');
+const board = new five.Board();
+const DISTANCE_THRESHOLD = 6;
+
+board.on('ready', () => {
+  const proximitySensor = new five.Proximity({
+    controller: 'GP2Y0A41SK0F',
+    pin: 'A4'
+  });
+
+  // Status LED when something gets too close
+  const proximitySensorLED = new five.Led(8);
+
+  proximitySensor.on('change', function () {
+    // Detect if something is close and light up LED if so
+  });
+});
+```
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+```javascript
+  proximitySensor.on('change', function () {
+    if (proximitySensor.cm > 0 &&
+        proximitySensor.cm < DISTANCE_THRESHOLD) {
+      proximitySensorLED.on();
+    } else {
+      proximitySensorLED.off();
+    }
+  });
+```
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ## Serial Data: Compass
+
+              * a.k.a _magnetometer_
+              * Johnny-Five class [`Compass`](http://johnny-five.io/api/compass/)
+              * `data` event and `heading` information
+              * (Brief aside on magnetic declination)
+              * Making output from input: the `Piezo` class
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ### Compass North Alarm
+              ![](images/fritzing-compass.png)
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+```javascript
+const five = require('johnny-five');
+const board = new five.Board();
+
+function isNorth (heading) { }
+function adjustHeading (rawHeading) { }
+
+board.on('ready', () => {
+  const compass = new five.Compass({
+    controller: 'HMC5883L'
+  });
+  const piezo = new five.Piezo({ pin: 11 });
+  compass.on('data', function () {
+    if (isNorth(adjustHeading(this.heading))) {
+      piezo.frequency(587, 500);
+    }
+  });
+});
+```
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+```javascript
+const five = require('johnny-five');
+const board = new five.Board();
+
+const MAGNETIC_DECLINATION = 15; // Portland, Ore., approx. magnetic declination
+const ALERT_THRESHOLD = 5; // How many degress from north should count as north?
+
+//...
+```
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+```javascript
+/**
+ * Adjust `rawHeading` for local magnetic declination and then
+ * bound it between 0-360
+ */
+function adjustHeading (rawHeading) {
+  var adjustedHeading = rawHeading - MAGNETIC_DECLINATION;
+  if (adjustedHeading < 0) { adjustedHeading += 360; }
+  if (adjustedHeading >= 360) { adjustedHeading -= 360; }
+  return Math.floor(adjustedHeading);
+}
+```
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+```javascript
+/**
+ * See if `heading` is within `ALERT_THRESHOLD` degrees of 0/360 (north)
+ */
+function isNorth (heading) {
+  return (heading > 360 - ALERT_THRESHOLD ||
+    heading < 0 + ALERT_THRESHOLD);
+}
+```
+            </script>
+          </section>
+
+
+          <section data-markdown>
+            <script type="text/template">
+              ## Bonus Section: Driving Servos
+
+              TODO
+            </script>
+          </section>
+
+
+        </section>
+
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+        width: 1024,
+        height: 820,
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
