@@ -41,16 +41,30 @@
 				<section>
 					<h1>Hardware Hacking with Johnny-Five and Node.js</h1>
 					<h3>March 24, 2016</h3>
+          <h4>Portland JSOT Meetup!</4>
           <p>Lyza Danger Gardner | <a href="https://twitter.com/lyzadanger">@lyzadanger</a></p>
 				</section>
 
         <section data-markdown>
           <script type="text/template">
+            ## Hi!
+
+            * Hi! I'm Lyza
+            * [@lyzadanger](https://twitter.com/lyzadanger) or [lyza.com](https://www.lyza.com)
+            * Co-founder and CTO at Cloud Four here in Portland
+            * Writing a book about JavaScript and Hardware
+
+          </script>
+        </section>
+
+        <section data-markdown>
+          <script type="text/template">
             <h2>Before We Begin!</h2>
             <ul>
+              <li class="fragment">Examples (source code and schematics) can be found at <a href="https://github.com/lyzadanger/jsot-johnny-five">jsot-johnny-five</a> on Github.</li>
+              <li class="fragment">Shortlink to examples: [bit.ly/jsot-j5](http://bit.ly/jsot-j5) | slides: [bit.ly/jsot-j5-slides](http://bit.ly/jsot-j5-slides)</li>
               <li class="fragment">Please don't unplug wires from breadboards</li>
               <li class="fragment"><em>npm</em> drama this week has had impact</li>
-              <li class="fragment">Examples (source code and schematics) can be found at <a href="https://github.com/lyzadanger/jsot-johnny-five">jsot-johnny-five</a> on Github.</li>
               <li class="fragment">JS complexity in these slides is fairly low, and code sacrifices elegance for simplicity. Yell at me if aything doesn't make sense.</li>
             </ul>
           </script>
@@ -60,112 +74,108 @@
           <script type="text/template">
             ## JavaScript and Hardware Together
 
-            * Host-client method
-            * Embedded JS
-            * Other Methods
-          </script>
-        </section>
-
-        <section data-markdown>
-          <script type="text/template">
-            ## Host-Client Method
-
-            ![](images/01-host-client.png)
-          </script>
-        </section>
-
-        <section data-markdown>
-          <script type="text/template">
-            ## [Johnny-Five](http://johnny-five.io) and Arduino
-
-            Today, we are going to set up a _host-client_ configuration using Arduino Uno development boards, _firmata_ firmware and the Johnny-Five Node.js framework.
-
-            ![](https://github.com/rwaldron/johnny-five/raw/master/assets/sgier-johnny-five.png)
+            _How the heck do JS and hardware_ **work**?
+            <ul>
+              <li class="fragment">Embedded JavaScript</li>
+              <li class="fragment">Other Methods</li>
+              <li class="fragment">Host-client method</li>
+            </ul>
           </script>
         </section>
 
         <section>
-          <!-- Begin nested section -->
+          <h2>HAY WAIT</h2>
+          <p>Before we get to that, let's look at how it flows without JavaScript...</p>
+        </section>
 
-          <section data-markdown>
-            <script type="text/template">
-              ## Arduino...It's Everything You Want to Be
+        <section data-markdown>
+          <script type="text/template">
+            ## Arduino Uno
 
-              Arduino. It's a company. It's a project. It's hardware. It's a user community.  Arduino is, well, it's _Arduino_, a broad concept combining open-source hardware and software with the goal of making it easy (and inexpensive) for beginners to build interactive devices.
-            </script>
-          </section>
+            <img src="images/02-arduino-uno-photo.jpg" alt="Arduino Uno" class="image-floatLeftHalf" />
 
-          <section data-markdown>
-            <script type="text/template">
-              ## Arduino Uno
+            * Most popular Arduino board
+            * Great for beginners
+            * Widely tested and used
 
-              <img src="images/02-arduino-uno-photo.jpg" alt="Arduino Uno" class="image-floatLeftHalf" />
+          </script>
+        </section>
 
-              * Most popular Arduino board
-              * Great for beginners
-              * Widely tested and used
+        <section data-markdown>
+          <script type="text/template">
+            ## Arduino Uno Parts
+            <img src="images/02-arduino-uno-parts.png" alt="Arduino Uno Parts" class="image-floatLeftHalf" />
+            1. Atmel ATmega328P MCU
+            2. USB-B connector
+            3. Digital pins
+            4. Power pins
+            5. Analog input pins
+            6. DC barrel jack
+            7. On LED
+            8. Reset button
+          </script>
+        </section>
 
-            </script>
-          </section>
+        <section data-markdown>
+          <script type="text/template">
+            ## Arduino Workflow
 
-          <section data-markdown>
-            <script type="text/template">
-              ## Arduino Uno Parts
-              <img src="images/02-arduino-uno-parts.png" alt="Arduino Uno Parts" class="image-floatLeftHalf" />
-              1. Atmel ATmega328P MCU
-              2. USB-B connector
-              3. Digital pins
-              4. Power pins
-              5. Analog input pins
-              6. DC barrel jack
-              7. On LED
-              8. Reset button
-            </script>
-          </section>
+            <ol>
+              <li class="fragment">Write code in the Arduino IDE using the Arduino programming language</li>
+              <li class="fragment">Compile and upload (flash) sketch to board</li>
+            </ol>
+          </script>
+        </section>
 
-          <section data-markdown>
-            <script type="text/template">
-              ## Arduino Workflow
+        <section data-markdown>
+          <script type="text/template">
+            ## Hello, World LED with Arduino
 
-              1. Write code in the Arduino IDE using the Arduino programming language
-              2. Compile and upload (flash) sketch to board
-            </script>
-          </section>
+            ```C
+            void setup() {
+              pinMode(13, OUTPUT);
+            }
+            void loop() {
+              digitalWrite(13, HIGH);
+              delay(500);
+              digitalWrite(13, LOW);
+              delay(500);
+            }
+            ```
+            _Example Arduino sketch_
+          </script>
+        </section>
 
-          <section data-markdown>
-            <script type="text/template">
-              ## Hello, World LED with Arduino
-
-              ```C
-              void setup() {
-                pinMode(13, OUTPUT);
-              }
-              void loop() {
-                digitalWrite(13, HIGH);
-                delay(500);
-                digitalWrite(13, LOW);
-                delay(500);
-              }
-              ```
-              _Example Arduino sketch_
-            </script>
-          </section>
-
-          <section data-markdown>
-            <script type="text/template">
-              Once uploaded, Arduino sketch resides in microcontroller's nonvolatile _program memory_.
-              ![](images/02-arduino-ide-window.png)
-              _Sketch window in Arduino IDE_
-            </script>
-          </section>
-
-          <!-- END NESTED SECTION -->
-
+        <section data-markdown>
+          <script type="text/template">
+            Once uploaded, Arduino sketch resides in microcontroller's nonvolatile _program memory_.
+            ![](images/02-arduino-ide-window.png)
+            _Sketch window in Arduino IDE_
+          </script>
         </section>
 
         <section>
 
           <!-- BEGIN NESTED SECTION -->
+
+          <section data-markdown>
+            <script type="text/template">
+              ## [Johnny-Five](http://johnny-five.io) and Arduino
+
+              Today, we are going to set up a _host-client_ configuration using Arduino Uno development boards, _firmata_ firmware and the Johnny-Five Node.js framework.
+
+              ![](https://github.com/rwaldron/johnny-five/raw/master/assets/sgier-johnny-five.png)
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ## Host-Client Method
+
+              ![](images/01-host-client.png)
+            </script>
+          </section>
+
           <section data-markdown>
             <script type="text/template">
               ## Host-Client Configuration
@@ -183,39 +193,19 @@
 
           <section data-markdown>
             <script type="text/template">
-              ![](images/01-host-client-2.png)
-            </script>
-          </section>
-
-          <section data-markdown>
-            <script type="text/template">
-              ![](images/01-host-client-3.png)
-            </script>
-          </section>
-
-          <section data-markdown>
-            <script type="text/template">
-              ![](images/01-host-client-conversation.png)
-            </script>
-          </section>
-
-          <section data-markdown>
-            <script type="text/template">
-              ## Host-Client Method
-
-              * Host must continuously execute code and communicate
-              * Client cannot run independently
-              * Logic does not reside in firmware
-
-            </script>
-          </section>
-
-          <section data-markdown>
-            <script type="text/template">
               ## Firmata
 
-              * Firmata _protocol_
-              * Arduino firmata _implementation_
+              <ul>
+                <li class="fragment">Firmata protocol</li>
+                <li class="fragment">vs.</li>
+                <li class="fragment">Arduino firmata implementation</li>
+              </ul>
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ![](images/01-host-client-2.png)
             </script>
           </section>
 
@@ -235,15 +225,42 @@
 
           <section data-markdown>
             <script type="text/template">
+              ![](images/01-host-client-3.png)
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ![](images/01-host-client-conversation.png)
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ## Host-Client Method
+
+              <ul>
+                <li class="fragment">Host must continuously execute code and communicate</li>
+                <li class="fragment">Host and client must speak the same "language" (i.e. API/protocol)</li>
+                <li class="fragment">Client cannot run independently</li>
+                <li class="fragment">Logic does not reside in firmware</li>
+              </ul>
+
+            </script>
+          </section>
+
+
+          <section data-markdown>
+            <script type="text/template">
               ## Installing Johnny-Five
 
               Johnny-Five is a Node.js firmata-based framework for controlling hardware platforms using a host-client configuration.
 
               ```
-              mkdir playtime
-              cd playtime
               npm install johnny-five
               ```
+
+              (or, if you've cloned the example repo, `npm install` will get you there)
             </script>
           </section>
 
@@ -273,7 +290,7 @@ board.on('ready', () => {
   led.blink(500);
 });
 ```
-hello.js
+examples/01-hello.js
             </script>
           </section>
 
@@ -311,6 +328,7 @@ board.on('ready', () => {
   });
 });
 ```
+examples/02-hello-stop.js
             </script>
           </section>
 
@@ -385,6 +403,14 @@ board.on('ready', function () {
 });
 
 ```
+examples/03-rgb.js
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ![](images/wandows.jpg)
+              ### SORRY. The Internet borke.
             </script>
           </section>
 
@@ -426,7 +452,44 @@ function cycleColors (led, colors, index) {
 ```
             </script>
           </section>
-          <!-- END NESTED SECTION -->
+
+          <section data-markdown>
+            <script type="text/template">
+              ## THIS ONE IS SAFE
+            </script>
+          </section>
+
+
+          <section data-markdown>
+            <script type="text/template">
+```javascript
+const five           = require('johnny-five');
+const board          = new five.Board();
+
+board.on('ready', function () {
+  const colorLED = new five.Led.RGB([6, 5, 3]);
+  var colors = [ '#ffffff', '#ff0000', '#ffff00', '#ff00ff', '#0000ff'];
+  var colorIndex = 0;
+  function danceColor () {
+    if (colorIndex >= colors.length) { colorIndex = 0; }
+    colorLED.color(colors[colorIndex]);
+    colorIndex++;
+  }
+  setInterval(danceColor, 250);
+});
+````
+examples/03-rgb-dance.js
+        </script>
+      </section>
+
+      <section data-markdown>
+        <script type="text/template">
+          #### (This example reminds me of this)
+          ![](images/groovy.gif)
+        </script>
+      </section>
+
+                <!-- END NESTED SECTION -->
 
         </section>
 
@@ -436,6 +499,13 @@ function cycleColors (led, colors, index) {
           <section data-markdown>
             <script type="text/template">
               ## Sensors and Johnny-Five
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+              ### Analog Sensor Examples
+              ![](images/fritzing-sensors.png)
             </script>
           </section>
 
@@ -452,8 +522,73 @@ function cycleColors (led, colors, index) {
 
           <section data-markdown>
             <script type="text/template">
-              ### Analog Sensor Examples
-              ![](images/fritzing-sensors.png)
+            ### Basic Photoresistor
+```javascript
+const five = require('johnny-five');
+const board = new five.Board();
+
+board.on('ready', () => {
+  const photoResistor = new five.Sensor('A3');
+  photoResistor
+    .on('change', function () {
+      const currentVal = Math.round(this.value);
+      console.log(currentVal);
+    });
+});
+```
+examples/04-photoresistor-basic.js
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+            ### Scaled Photoresistor
+```javascript
+//..
+board.on('ready', () => {
+  const photoResistor = new five.Sensor('A3');
+  var minVal = 255;
+  var maxVal = 0;
+  photoResistor
+    .scale(0, 255)
+    .on('change', function () {
+      const currentVal = Math.round(this.value);
+      if (currentVal > maxVal) { maxVal = currentVal; }
+      if (currentVal < minVal) { minVal = currentVal; }
+      this.booleanAt((maxVal + minVal) / 2);
+      console.log(this.boolean);
+    });
+});
+```
+examples/04-photoresistor-scaled.js
+            </script>
+          </section>
+
+          <section data-markdown>
+            <script type="text/template">
+            ### Automatic LED
+```javascript
+//...
+board.on('ready', () => {
+  //...
+  photoResistor
+    .scale(0, 255)
+    .on('change', function () {
+      const currentVal = Math.round(this.value);
+      if (currentVal > maxVal) { maxVal = currentVal; }
+      if (currentVal < minVal) { minVal = currentVal; }
+      this.booleanAt((maxVal + minVal) / 2);
+      if (this.boolean) {
+        photoResistorLED.off();
+        console.log('bright');
+      } else {
+        photoResistorLED.on();
+        console.log('dim');
+      }
+    });
+});
+```
+examples/04-photoresistor.js
             </script>
           </section>
 
@@ -489,6 +624,7 @@ board.on('ready', () => {
   });
 });
 ```
+examples/05-proximity.js
             </script>
           </section>
 
@@ -504,6 +640,7 @@ board.on('ready', () => {
     }
   });
 ```
+examples/05-proximity.js
             </script>
           </section>
 
@@ -547,6 +684,7 @@ board.on('ready', () => {
   });
 });
 ```
+examples/06-compass.js
             </script>
           </section>
 
@@ -561,6 +699,7 @@ const ALERT_THRESHOLD = 5; // How many degress from north should count as north?
 
 //...
 ```
+examples/06-compass.js
             </script>
           </section>
 
@@ -578,6 +717,7 @@ function adjustHeading (rawHeading) {
   return Math.floor(adjustedHeading);
 }
 ```
+examples/06-compass.js
             </script>
           </section>
 
@@ -592,21 +732,31 @@ function isNorth (heading) {
     heading < 0 + ALERT_THRESHOLD);
 }
 ```
+examples/06-compass.js
             </script>
           </section>
 
 
-          <section data-markdown>
-            <script type="text/template">
-              ## Bonus Section: Driving Servos
-
-              TODO
-            </script>
-          </section>
-
+          <!-- END NESTED SECTION -->
 
         </section>
 
+      <section data-markdown>
+        <script type="text/template">
+          ## It's a bit of an inexact science
+          ![](images/inexact-science.gif)
+        </script>
+      </section>
+
+      <section data-markdown>
+        <script type="text/template">
+          ## Have Fun!
+
+          * Shortlink to examples: [bit.ly/jsot-j5](http://bit.ly/jsot-j5)
+          * Slides: [bit.ly/jsot-j5-slides](http://bit.ly/jsot-j5-slides)
+
+        </script>
+      </section>
 
 			</div>
 
